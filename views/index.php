@@ -13,7 +13,7 @@ echo <<<EOL
 EOL;
 
 // First display active races if we have some
-echo "<div>";
+echo "<div>\n<h2>Active races</h2>";
 if(empty($activeRaces))
 {
 	echo "There's currently no active race, feel free to create one.";
@@ -28,7 +28,7 @@ else
 echo "</div>";
 
 // Afterwards display last races if we have some
-echo "<div>";
+echo "<div>\n<h2>Finished races</h2>";
 if(empty($lastRaces))
 {
 	echo "It seems like there are no finished races to display.";
@@ -43,7 +43,7 @@ else
 echo "</div>";
 
 // And at the bottom display the fastest horse if we have one
-echo "<div>";
+echo "<div>\n<h2>Fastest horse</h2>";
 if(empty($fastestHorse))
 {
 	echo "No horse has finished a race so far.";
