@@ -29,7 +29,7 @@ class AdvanceRacesController implements ControllerInterface
 		}
 		catch (Exception $exception)
 		{
-			ViewManager::error('There was some sort of error with your request: ' . $exception->getMessage());
+			ViewManager::error($exception->getMessage());
 		}
 	}
 }

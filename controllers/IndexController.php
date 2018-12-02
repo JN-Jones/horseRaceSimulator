@@ -28,7 +28,7 @@ class IndexController implements ControllerInterface
 		}
 		catch (Exception $exception)
 		{
-			ViewManager::error('There was something wrong with your request: ' . $exception->getMessage());
+			ViewManager::error($exception->getMessage());
 		}
 	}
 }
