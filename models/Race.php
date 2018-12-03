@@ -28,8 +28,11 @@ class Race
 	 */
 	public static function create()
 	{
+		$db = DatabaseManager::getInstance();
+
 		// Check how many races are currently running
-		$numRunning = count(self::getRunningRaces());
+		$numRunning = $db->select("SELECT COUNT(id) AS num FROM races WHERE timeFinished IS NULL");
+		$numRunning = $numRunning['num'];
 
 		// If there are already enough races throw a simple exception
 		if($numRunning >= ConfigManager::getInstance()->getNumRaces())
@@ -41,7 +44,6 @@ class Race
 		$race = new static();
 		$race->timeStarted = new DateTime();
 
-		$db = DatabaseManager::getInstance();
 		// As we're doing multiple queries do them in a transaction
 		$db->beginTransaction();
 		try
@@ -157,7 +159,11 @@ class Race
 	 */
 	public function advanceTenSeconds()
 	{
-		// TODO: Make sure this is race still runs
+		if($this->timeFinished != null)
+		{
+			throw new Exception('This race has already finished');
+		}
+
 		$db = DatabaseManager::getInstance();
 		// As we're potential doing two queries we're going to do that in a transaction
 		$db->beginTransaction();

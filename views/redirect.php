@@ -3,7 +3,7 @@
 
 // Include the header but add an automatic refresh as redirect
 ViewManager::getView('header', [
-	'additionalHeaders' => '<meta http-equiv="refresh" content="30; URL=./index.php?module=' . $module . '">'
+	'additionalHeaders' => '<meta http-equiv="refresh" content="15; URL=./index.php?module=' . $module . '">'
 ]);
 
 // Add some basic text which includes a link in case the automatic redirect is blocked
