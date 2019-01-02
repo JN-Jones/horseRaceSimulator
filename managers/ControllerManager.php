@@ -1,4 +1,5 @@
 <?php
+namespace Managers;
 
 /**
  * Class ControllerManager
@@ -22,18 +23,18 @@ class ControllerManager
 		}
 
 		// Generate the proper controller name for this module
-		$controllerName = ucfirst($module) . "Controller";
+		$controllerName = "Controllers\\" . ucfirst($module) . "Controller";
 
 		// Make sure we have a class with that name and it implements our ControllerInterface
-		if(!class_exists($controllerName) || !is_subclass_of($controllerName, 'ControllerInterface'))
+		if(!class_exists($controllerName) || !is_subclass_of($controllerName, 'Controllers\ControllerInterface'))
 		{
 			// Simply fall back to the index if we don't have a proper module
 			// Could also throw a 404 or any other error message
-			$controllerName = 'IndexController';
+			$controllerName = 'Controllers\IndexController';
 		}
 
 		// Create the controller and let that controller handle this request
-		/** @var ControllerInterface $controllerInstance */
+		/** @var \Controllers\ControllerInterface $controllerInstance */
 		$controllerInstance = new $controllerName();
 		$controllerInstance->handleRequest();
 	}

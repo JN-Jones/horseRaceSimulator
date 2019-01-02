@@ -1,4 +1,9 @@
 <?php
+namespace Models;
+
+use Misc\Random;
+use Managers\DatabaseManager;
+use Managers\ConfigManager;
 
 /**
  * Class Horse
@@ -30,7 +35,7 @@ class Horse
 	 *
 	 * @param Race $race The instance of the race this horse will participate in
 	 * @return Horse The generated horse
-	 * @throws Exception In case the horse couldn't be generated
+	 * @throws \Exception In case the horse couldn't be generated
 	 */
 	public static function create(Race $race)
 	{
@@ -63,7 +68,7 @@ class Horse
 	 *
 	 * @param Race $race The race to find horses for
 	 * @return Horse[] An array containing all horses for the given race
-	 * @throws Exception In case the requests couldn't be handled properly
+	 * @throws \Exception In case the requests couldn't be handled properly
 	 */
 	public static function findByRace($race)
 	{
@@ -89,7 +94,7 @@ class Horse
 	/**
 	 * Select the fastest horse
 	 * @return Horse|null Returns either the horse instance or null in case no fastest horse exists
-	 * @throws Exception In case the fastest horse couldn't be retrieved
+	 * @throws \Exception In case the fastest horse couldn't be retrieved
 	 */
 	public static function getFastest()
 	{
@@ -223,7 +228,7 @@ class Horse
 					"id" => $this->id
 				]);
 			}
-			catch (Exception $e)
+			catch (\Exception $e)
 			{
 				// Do nothing. If the query didn't work the next call to this function will properly recalculate the time needed and retry the update
 			}

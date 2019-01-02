@@ -5,4 +5,4 @@
 require_once "./misc/autoloader.php";
 
 // Afterwards let the ControllerManager decide how to handle the request. Controllers then output one of the available views
-ControllerManager::handleRequest();
+Managers\ControllerManager::handleRequest();

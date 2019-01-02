@@ -1,4 +1,8 @@
 <?php
+namespace Controllers;
+
+use Models\Race;
+use Managers\ViewManager;
 
 /**
  * Class CreateRaceController
@@ -20,7 +24,7 @@ class CreateRaceController implements ControllerInterface
 			// In case of success we redirect back to index where the new race will be displayed
 			ViewManager::redirectTo('index');
 		}
-		catch (Exception $exception)
+		catch (\Exception $exception)
 		{
 			// Otherwise we show the error message to the user
 			ViewManager::error($exception->getMessage());

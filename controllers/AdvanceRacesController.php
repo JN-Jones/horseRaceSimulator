@@ -1,4 +1,8 @@
 <?php
+namespace Controllers;
+
+use Models\Race;
+use Managers\ViewManager;
 
 /**
  * Class AdvanceRacesController
@@ -27,7 +31,7 @@ class AdvanceRacesController implements ControllerInterface
 			// Redirect back to index to show actualized race list
 			ViewManager::redirectTo('index');
 		}
-		catch (Exception $exception)
+		catch (\Exception $exception)
 		{
 			ViewManager::error($exception->getMessage());
 		}

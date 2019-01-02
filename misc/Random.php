@@ -1,4 +1,5 @@
 <?php
+namespace Misc;
 
 /**
  * Class Random

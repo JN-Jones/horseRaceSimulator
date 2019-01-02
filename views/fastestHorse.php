@@ -1,6 +1,6 @@
 <?php
 // View to display the fastest horse
-/** @var Horse $horse The fastest horse */
+/** @var \Models\Horse $horse The fastest horse */
 
 echo <<<EOL
 Fastest horse ever was horse #{$horse->getId()} in race #{$horse->getRaceId()} with a time of {$horse->getTimeNeeded()} seconds.<br />

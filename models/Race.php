@@ -1,4 +1,9 @@
 <?php
+namespace Models;
+
+use DateTime;
+use Managers\DatabaseManager;
+use Managers\ConfigManager;
 
 /**
  * Class Race
@@ -24,7 +29,7 @@ class Race
 	 * Function to create a new race including its horses
 	 *
 	 * @return Race The created race
-	 * @throws Exception In case the new race couldn't be created
+	 * @throws \Exception In case the new race couldn't be created
 	 */
 	public static function create()
 	{
@@ -37,7 +42,7 @@ class Race
 		// If there are already enough races throw a simple exception
 		if($numRunning >= ConfigManager::getInstance()->getNumRaces())
 		{
-			throw new Exception('There are ' . ConfigManager::getInstance()->getNumRaces() . ' races active, please finish one first');
+			throw new \Exception('There are ' . ConfigManager::getInstance()->getNumRaces() . ' races active, please finish one first');
 		}
 
 		// Otherwise create the race, save the current time
@@ -63,7 +68,7 @@ class Race
 			// And commit the whole transaction
 			$db->commit();
 		}
-		catch (Exception $exception)
+		catch (\Exception $exception)
 		{
 			// If we had some sort of error try to roll back the changes made but rethrow the exception so the controller can properly handle it
 			$db->rollBack();
@@ -77,7 +82,7 @@ class Race
 	 * Get all currently running races
 	 *
 	 * @return Race[] All races currently running
-	 * @throws Exception In case the request couldn't be handled
+	 * @throws \Exception In case the request couldn't be handled
 	 */
 	public static function getRunningRaces()
 	{
@@ -104,7 +109,7 @@ class Race
 	 *
 	 * @param int $num The number of races to return
 	 * @return Race[]
-	 * @throws Exception In case the request couldn't be handled
+	 * @throws \Exception In case the request couldn't be handled
 	 */
 	public static function getLastResults($num=5)
 	{
@@ -155,13 +160,13 @@ class Race
 
 	/**
 	 * Advance the race by ten seconds
-	 * @throws Exception In case the request couldn't be handled properly
+	 * @throws \Exception In case the request couldn't be handled properly
 	 */
 	public function advanceTenSeconds()
 	{
 		if($this->timeFinished != null)
 		{
-			throw new Exception('This race has already finished');
+			throw new \Exception('This race has already finished');
 		}
 
 		$db = DatabaseManager::getInstance();
@@ -187,7 +192,7 @@ class Race
 			// Now try to commit everything
 			$db->commit();
 		}
-		catch (Exception $exception)
+		catch (\Exception $exception)
 		{
 			// If something went wrong roll everything back and rethrow the exception for the controller
 			$db->rollBack();

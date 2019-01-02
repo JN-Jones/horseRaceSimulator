@@ -3,7 +3,7 @@
 
 // Include the header. The header could also include a refresh to automatically update the page to make sure it shows the current results
 // An AJAX solution would also be possible but it would need to update nearly every part of the page
-ViewManager::getView('header', [
+\Managers\ViewManager::getView('header', [
 //	'additionalHeaders' => '<meta http-equiv="refresh" content="60; URL=./index.php">'
 ]);
 
@@ -22,7 +22,7 @@ else
 {
 	foreach($activeRaces as $activeRace)
 	{
-		ViewManager::getView('activeRace', ['race' => $activeRace]);
+		\Managers\ViewManager::getView('activeRace', ['race' => $activeRace]);
 	}
 }
 echo "</div>";
@@ -37,7 +37,7 @@ else
 {
 	foreach($lastRaces as $finishedRace)
 	{
-		ViewManager::getView('finishedRace', ['race' => $finishedRace]);
+		\Managers\ViewManager::getView('finishedRace', ['race' => $finishedRace]);
 	}
 }
 echo "</div>";
@@ -50,9 +50,9 @@ if(empty($fastestHorse))
 }
 else
 {
-	ViewManager::getView('fastestHorse', ['horse' => $fastestHorse]);
+	\Managers\ViewManager::getView('fastestHorse', ['horse' => $fastestHorse]);
 }
 echo "</div>";
 
 // Finish everything with the footer
-ViewManager::getView('footer');
+\Managers\ViewManager::getView('footer');

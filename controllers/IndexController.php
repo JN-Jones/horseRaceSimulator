@@ -1,4 +1,10 @@
 <?php
+namespace Controllers;
+
+use Models\Race;
+use Models\Horse;
+use Managers\ViewManager;
+use Managers\ConfigManager;
 
 /**
  * Class IndexController
@@ -26,7 +32,7 @@ class IndexController implements ControllerInterface
 				'fastestHorse' => $fastestHorse
 			]);
 		}
-		catch (Exception $exception)
+		catch (\Exception $exception)
 		{
 			ViewManager::error($exception->getMessage());
 		}

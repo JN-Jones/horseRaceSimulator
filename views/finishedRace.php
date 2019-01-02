@@ -1,6 +1,6 @@
 <?php
 // View to display a single, already finished race
-/** @var Race $race The race to display */
+/** @var \Models\Race $race The race to display */
 
 $horses = $race->getSortedHorses();
 

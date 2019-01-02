@@ -1,4 +1,7 @@
 <?php
+namespace Managers;
+
+use PDO;
 
 /**
  * Class DatabaseManager
@@ -33,7 +36,7 @@ class DatabaseManager
 	/**
 	 * Private DatabaseManager constructor
 	 * Opens the database connection and saves it
-	 * @throws PDOException In case no connection can be established
+	 * @throws \PDOException In case no connection can be established
 	 */
 	private function __construct()
 	{
@@ -54,7 +57,7 @@ class DatabaseManager
 	 * @param bool $multi Whether or not multiple rows will be fetched
 	 * @param bool $fetch Whether or not something will be fetched (should be true for SELECT and false for UPDATE/INSERT)
 	 * @return mixed Returns the result of the query
-	 * @throws Exception In case there was something wrong with the given query an exception with more infos is thrown
+	 * @throws \Exception In case there was something wrong with the given query an exception with more infos is thrown
 	 */
 	public function query($query, $params = [], $multi = false, $fetch = true)
 	{
@@ -92,7 +95,7 @@ class DatabaseManager
 			// Make sure the query cursor is closed
 			$query->closeCursor();
 			// And throw an exception with the error data
-			throw new Exception("Error with Query ('{$query->queryString}') ({$info[1]}): {$info[2]}");
+			throw new \Exception("Error with Query ('{$query->queryString}') ({$info[1]}): {$info[2]}");
 		}
 		$query->closeCursor();
 
@@ -105,7 +108,7 @@ class DatabaseManager
 	 * @param string $query The query to execute. Can include named placeholders for variables
 	 * @param array $params Values used for named placeholders. Should always be of form "name => value"
 	 * @return mixed Returns the result of the query
-	 * @throws Exception In case there was something wrong with the given query an exception with more infos is thrown
+	 * @throws \Exception In case there was something wrong with the given query an exception with more infos is thrown
 	 */
 	public function select($query, $params = [])
 	{
@@ -118,7 +121,7 @@ class DatabaseManager
 	 * @param string $query The query to execute. Can include named placeholders for variables
 	 * @param array $params Values used for named placeholders. Should always be of form "name => value"
 	 * @return mixed Returns the result of the query
-	 * @throws Exception In case there was something wrong with the given query an exception with more infos is thrown
+	 * @throws \Exception In case there was something wrong with the given query an exception with more infos is thrown
 	 */
 	public function selectMulti($query, $params = [])
 	{
@@ -131,7 +134,7 @@ class DatabaseManager
 	 *
 	 * @param string $query The query to execute. Can include named placeholders for variables
 	 * @param array $params Values used for named placeholders. Should always be of form "name => value"
-	 * @throws Exception In case there was something wrong with the given query an exception with more infos is thrown
+	 * @throws \Exception In case there was something wrong with the given query an exception with more infos is thrown
 	 */
 	public function update($query, $params = [])
 	{
@@ -143,7 +146,7 @@ class DatabaseManager
 	 *
 	 * @param string $query The query to execute. Can include named placeholders for variables
 	 * @param array $params Values used for named placeholders. Should always be of form "name => value"
-	 * @throws Exception In case there was something wrong with the given query an exception with more infos is thrown
+	 * @throws \Exception In case there was something wrong with the given query an exception with more infos is thrown
 	 */
 	public function insert($query, $params = [])
 	{
