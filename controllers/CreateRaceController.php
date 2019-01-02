@@ -1,6 +1,9 @@
 <?php
 namespace Controllers;
 
+use Exceptions\QueryException;
+use Exceptions\TooManyRacesException;
+use Exceptions\ViewNotFoundException;
 use Models\Race;
 use Managers\ViewManager;
 
@@ -24,10 +27,14 @@ class CreateRaceController implements ControllerInterface
 			// In case of success we redirect back to index where the new race will be displayed
 			ViewManager::redirectTo('index');
 		}
-		catch (\Exception $exception)
+		catch (TooManyRacesException $exception)
 		{
 			// Otherwise we show the error message to the user
 			ViewManager::error($exception->getMessage());
+		}
+		catch (QueryException | ViewNotFoundException $exception)
+		{
+			ViewManager::error('System error');
 		}
 	}
 }

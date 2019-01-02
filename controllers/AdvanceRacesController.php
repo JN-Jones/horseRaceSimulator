@@ -1,6 +1,9 @@
 <?php
 namespace Controllers;
 
+use Exceptions\QueryException;
+use Exceptions\RaceFinishedException;
+use Exceptions\ViewNotFoundException;
 use Models\Race;
 use Managers\ViewManager;
 
@@ -31,9 +34,13 @@ class AdvanceRacesController implements ControllerInterface
 			// Redirect back to index to show actualized race list
 			ViewManager::redirectTo('index');
 		}
-		catch (\Exception $exception)
+		catch (RaceFinishedException $exception)
 		{
 			ViewManager::error($exception->getMessage());
+		}
+		catch (QueryException | ViewNotFoundException $exception)
+		{
+			ViewManager::error('System error');
 		}
 	}
 }

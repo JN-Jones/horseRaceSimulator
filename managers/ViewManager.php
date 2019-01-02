@@ -1,6 +1,8 @@
 <?php
 namespace Managers;
 
+use Exceptions\ViewNotFoundException;
+
 /**
  * Class ViewManager
  *
@@ -13,14 +15,14 @@ class ViewManager
 	 *
 	 * @param string $view The name of the view to load
 	 * @param array $params An array of parameters to make available for the view. Should be in format "name => value"
-	 * @throws \Exception In case no view with the given name was found
+	 * @throws ViewNotFoundException In case no view with the given name was found
 	 */
 	public static function getView($view, $params=[])
 	{
 		// Test whether a view with the name exists
 		if(!file_exists("./views/{$view}.php"))
 		{
-			throw new \Exception("View {$view} not found");
+			throw new ViewNotFoundException($view);
 		}
 
 		// Some PHP magic to make all parameters easily accessible from the view
@@ -43,7 +45,7 @@ class ViewManager
 	 * Redirect to a given module while showing a short redirection message
 	 *
 	 * @param string $module The module to redirect to
-	 * @throws \Exception In case the "redirect" view is not available
+	 * @throws ViewNotFoundException In case the "redirect" view is not available
 	 */
 	public static function redirectTo($module)
 	{
@@ -55,7 +57,7 @@ class ViewManager
 	 * Show an error message with a simple link back to the index
 	 *
 	 * @param string $message The error message to display
-	 * @throws \Exception In case the "error" view is not available
+	 * @throws ViewNotFoundException In case the "error" view is not available
 	 */
 	public static function error($message)
 	{

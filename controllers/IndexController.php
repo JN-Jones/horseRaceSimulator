@@ -1,6 +1,8 @@
 <?php
 namespace Controllers;
 
+use Exceptions\QueryException;
+use Exceptions\ViewNotFoundException;
 use Models\Race;
 use Models\Horse;
 use Managers\ViewManager;
@@ -32,9 +34,9 @@ class IndexController implements ControllerInterface
 				'fastestHorse' => $fastestHorse
 			]);
 		}
-		catch (\Exception $exception)
+		catch (QueryException | ViewNotFoundException $exception)
 		{
-			ViewManager::error($exception->getMessage());
+			ViewManager::error('System error');
 		}
 	}
 }
