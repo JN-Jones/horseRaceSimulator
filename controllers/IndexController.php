@@ -13,12 +13,12 @@ use Managers\ConfigManager;
  *
  * Controller which handles all the index and listing stuff
  */
-class IndexController implements ControllerInterface
+class IndexController extends AbstractController
 {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function handleRequest()
+	public function handleGetRequest()
 	{
 		try
 		{

@@ -12,12 +12,12 @@ use Managers\ViewManager;
  *
  * Controller to create a new race
  */
-class CreateRaceController implements ControllerInterface
+class CreateRaceController extends AbstractController
 {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function handleRequest()
+	public function handleGetRequest()
 	{
 		// Try to create a new race and catch the exception if we have too many races already
 		try

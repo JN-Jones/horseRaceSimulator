@@ -8,5 +8,8 @@
  */
 spl_autoload_register(function ($class) {
 	$filename = '.' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
-	require_once $filename;
+	if(file_exists($filename))
+	{
+		require_once $filename;
+	}
 });

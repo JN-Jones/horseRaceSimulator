@@ -1,6 +1,8 @@
 <?php
 namespace Managers;
 
+use Exceptions\RouteNotFoundException;
+
 /**
  * Class ControllerManager
  *
@@ -10,6 +12,7 @@ class ControllerManager
 {
 	/**
 	 * Handles the actual request
+	 * @throws RouteNotFoundException In case no controller could handle the given input
 	 */
 	public static function handleRequest()
 	{
@@ -25,17 +28,27 @@ class ControllerManager
 		// Generate the proper controller name for this module
 		$controllerName = "Controllers\\" . ucfirst($module) . "Controller";
 
-		// Make sure we have a class with that name and it implements our ControllerInterface
-		if(!class_exists($controllerName) || !is_subclass_of($controllerName, 'Controllers\ControllerInterface'))
+		// Make sure we have a class with that name and it extends our AbstractController
+		if(!class_exists($controllerName) || !is_subclass_of($controllerName, 'Controllers\AbstractController'))
 		{
-			// Simply fall back to the index if we don't have a proper module
-			// Could also throw a 404 or any other error message
-			$controllerName = 'Controllers\IndexController';
+			// Throw an exception so the application can decide what to do
+			throw new RouteNotFoundException();
 		}
 
 		// Create the controller and let that controller handle this request
-		/** @var \Controllers\ControllerInterface $controllerInstance */
+		/** @var \Controllers\AbstractController $controllerInstance */
 		$controllerInstance = new $controllerName();
-		$controllerInstance->handleRequest();
+		if($_SERVER['REQUEST_METHOD'] == 'GET')
+		{
+			$controllerInstance->handleGetRequest();
+		}
+		elseif($_SERVER['REQUEST_METHOD'] == 'POST')
+		{
+			$controllerInstance->handlePostRequest();
+		}
+		else
+		{
+			throw new RouteNotFoundException();
+		}
 	}
 }

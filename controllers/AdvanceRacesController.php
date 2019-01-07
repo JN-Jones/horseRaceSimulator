@@ -12,12 +12,12 @@ use Managers\ViewManager;
  *
  * Controller which advances all active races by 10 seconds
  */
-class AdvanceRacesController implements ControllerInterface
+class AdvanceRacesController extends AbstractController
 {
 	/**
 	 *  {@inheritdoc}
 	 */
-	public function handleRequest()
+	public function handleGetRequest()
 	{
 		try
 		{
