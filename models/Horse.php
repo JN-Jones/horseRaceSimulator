@@ -11,25 +11,54 @@ use Managers\ConfigManager;
  *
  * Model for a single horse
  */
-class Horse
+class Horse extends AbstractModel
 {
+	/** @var string $table The table that stores these models. Used to query when searching for one */
+	protected static $table = 'horses';
+
 	/** @var int $baseSpeed The base speed of all horses */
-	private static $baseSpeed = 5;
+	protected static $baseSpeed = 5;
 
 	/** @var int $id Internal ID of this horse */
-	private $id = -1;
+	protected $id = -1;
 	/** @var int $raceId The internal ID of the @Race this horse participates in */
-	private $raceId = -1;
+	protected $raceId = -1;
 
 	/** @var float $speed The individual speed stat for this horse */
-	private $speed = 0.;
+	protected $speed = 0.;
 	/** @var float $strength The individual strength stat for this horse */
-	private $strength = 0.;
+	protected $strength = 0.;
 	/** @var float $endurance The individual endurance stat for this horse */
-	private $endurance = 0.;
+	protected $endurance = 0.;
 
 	/** @var int $timeNeeded As soon as this horse has finished it race the total time needed will be saved here (in seconds) */
-	private $timeNeeded = -1;
+	protected $timeNeeded = -1;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function __construct($rawData=[])
+	{
+		parent::__construct($rawData);
+		if(!empty($rawData))
+		{
+			$this->id = $rawData['id'];
+			$this->raceId = $rawData['raceId'];
+			$this->speed = $rawData['speed'];
+			$this->strength = $rawData['strength'];
+			$this->endurance = $rawData['endurance'];
+			$this->timeNeeded = $rawData['timeNeeded'];
+		}
+	}
+
+	/**
+	 * Not implemented, see @createForRace
+	 * @throws \Exception
+	 */
+	public static function create()
+	{
+		throw new \Exception("Horse doesn't implement this method, please use `createForRace`");
+	}
 
 	/**
 	 * Creates a single horse for a given race
@@ -38,7 +67,7 @@ class Horse
 	 * @return Horse The generated horse
 	 * @throws QueryException In case the insert query couldn't be handled
 	 */
-	public static function create(Race $race)
+	public static function createForRace(Race $race)
 	{
 		// Create a horse object and assign it to the race
 		$horse = new static();
@@ -61,64 +90,7 @@ class Horse
 		// Save the id
 		$horse->id = $db->getInsertedId();
 
-		return $horse;
-	}
-
-	/**
-	 * Find all horses for a given race
-	 *
-	 * @param Race $race The race to find horses for
-	 * @return Horse[] An array containing all horses for the given race
-	 * @throws QueryException In case the requests couldn't be handled properly
-	 */
-	public static function findByRace($race)
-	{
-		$db = DatabaseManager::getInstance();
-
-		$rawHorses = $db->selectMulti("SELECT * FROM horses WHERE raceId=:raceId", ['raceId' => $race->getId()]);
-
-		$horses = [];
-		foreach($rawHorses as $rawHorse)
-		{
-			$horse = new static();
-			$horse->id = $rawHorse['id'];
-			$horse->raceId = $rawHorse['raceId'];
-			$horse->speed = $rawHorse['speed'];
-			$horse->strength = $rawHorse['strength'];
-			$horse->endurance = $rawHorse['endurance'];
-			$horse->timeNeeded = $rawHorse['timeNeeded'];
-			$horses[] = $horse;
-		}
-		return $horses;
-	}
-
-	/**
-	 * Select the fastest horse
-	 * @return Horse|null Returns either the horse instance or null in case no fastest horse exists
-	 * @throws QueryException In case the fastest horse couldn't be retrieved
-	 */
-	public static function getFastest()
-	{
-		$db = DatabaseManager::getInstance();
-
-		// First query would select the fastest horse in all races, finished or not
-		// The second query only selects the fastest horse from all finished races and excludes horses from races which are still running
-		//$rawData = $db->select("SELECT * FROM horses WHERE timeNeeded>-1 ORDER BY timeNeeded ASC LIMIT 1");
-		$rawData = $db->select("SELECT h.* FROM horses h LEFT JOIN races r ON(h.raceId=r.id) WHERE h.timeNeeded>-1 AND r.timeFinished IS NOT NULL ORDER BY timeNeeded ASC LIMIT 1");
-
-		// No horse was found, return null
-		if(empty($rawData))
-		{
-			return null;
-		}
-		
-		$horse = new static();
-		$horse->id = $rawData['id'];
-		$horse->raceId = $rawData['raceId'];
-		$horse->speed = $rawData['speed'];
-		$horse->strength = $rawData['strength'];
-		$horse->endurance = $rawData['endurance'];
-		$horse->timeNeeded = $rawData['timeNeeded'];
+		parent::addInstance($horse);
 		return $horse;
 	}
 

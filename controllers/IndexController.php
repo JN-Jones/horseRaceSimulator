@@ -1,6 +1,8 @@
 <?php
 namespace Controllers;
 
+use Collections\HorseCollection;
+use Collections\RaceCollection;
 use Exceptions\QueryException;
 use Exceptions\ViewNotFoundException;
 use Models\Race;
@@ -23,9 +25,9 @@ class IndexController extends AbstractController
 		try
 		{
 			// First get everything we need: The active races, the last races and our fastest horse
-			$activeRaces = Race::getRunningRaces();
-			$lastRaces = Race::getLastResults(ConfigManager::getInstance()->getLastRacesDisplayed());
-			$fastestHorse = Horse::getFastest();
+			$activeRaces = RaceCollection::getRunningRaces();
+			$lastRaces = RaceCollection::getLastResults(ConfigManager::getInstance()->getLastRacesDisplayed());
+			$fastestHorse = HorseCollection::getFastest();
 
 			// The rest is done by the ViewManager. To do so we pass all variables we created befores
 			ViewManager::getView('index', [

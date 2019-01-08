@@ -8,7 +8,7 @@ use Exceptions\RouteNotFoundException;
  *
  * Basic interface for Controllers used to make sure they contain the same functions
  */
-class AbstractController
+abstract class AbstractController
 {
 	/**
 	 * Function called on a Controller if it should handle a get request

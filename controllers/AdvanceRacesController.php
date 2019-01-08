@@ -1,6 +1,7 @@
 <?php
 namespace Controllers;
 
+use Collections\RaceCollection;
 use Exceptions\QueryException;
 use Exceptions\RaceFinishedException;
 use Exceptions\ViewNotFoundException;
@@ -22,7 +23,7 @@ class AdvanceRacesController extends AbstractController
 		try
 		{
 			// Get all active races
-			$activeRaces = Race::getRunningRaces();
+			$activeRaces = RaceCollection::getRunningRaces();
 
 			// Loop through them and advance them
 			/** @var Race $activeRace */

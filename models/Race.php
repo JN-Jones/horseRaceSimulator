@@ -1,6 +1,7 @@
 <?php
 namespace Models;
 
+use Collections\HorseCollection;
 use DateTime;
 use Exceptions\QueryException;
 use Exceptions\RaceFinishedException;
@@ -13,20 +14,39 @@ use Managers\ConfigManager;
  *
  * Model for a single race
  */
-class Race
+class Race extends AbstractModel
 {
+	/** @var string $table The table that stores these models. Used to query when searching for one */
+	protected static $table = 'races';
+
 	/** @var int $id The internal ID of this race */
-	private $id = -1;
+	protected $id = -1;
 
 	/** @var int $timeRun The total time this race ran so far (in seconds) */
-	private $timeRun = 0;
-	/** @var Horse[] An array of horses participating in this race */
-	private $horses = [];
+	protected $timeRun = 0;
+	/** @var HorseCollection An array of horses participating in this race */
+	protected $horses = null;
 
 	/** @var DateTime $timeStarted The time this race was created/started. Used for sorting */
-	private $timeStarted;
+	protected $timeStarted;
 	/** @var DateTime|null $timeFinished The time this race was finished or null. Used for sorting */
-	private $timeFinished = null;
+	protected $timeFinished = null;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function __construct($rawData=[])
+	{
+		parent::__construct($rawData);
+		if(!empty($rawData))
+		{
+			$this->id = $rawData['id'];
+			$this->timeRun = $rawData['timeRun'];
+			$this->timeStarted = new DateTime($rawData['timeStarted']);
+			$this->timeFinished = $rawData['timeFinished'] == null ? null : new DateTime($rawData['timeFinished']);
+			$this->horses = HorseCollection::findByRace($this);
+		}
+	}
 
 	/**
 	 * Function to create a new race including its horses
@@ -63,9 +83,10 @@ class Race
 			$race->id = $db->getInsertedId();
 
 			// Afterwards create all horses for this race
+			$race->horses = new HorseCollection();
 			for ($i = 0; $i < ConfigManager::getInstance()->getNumHorses(); $i++)
 			{
-				$race->horses[] = Horse::create($race);
+				$race->horses->add(Horse::createForRace($race));
 			}
 
 			// And commit the whole transaction
@@ -78,60 +99,8 @@ class Race
 			throw $exception;
 		}
 
+		parent::addInstance($race);
 		return $race;
-	}
-
-	/**
-	 * Get all currently running races
-	 *
-	 * @return Race[] All races currently running
-	 * @throws QueryException|\Exception In case the request couldn't be handled
-	 */
-	public static function getRunningRaces()
-	{
-		$db = DatabaseManager::getInstance();
-
-		$rawRaces = $db->selectMulti("SELECT * FROM races WHERE timeFinished IS NULL ORDER BY timeStarted ASC");
-
-		$races = [];
-		foreach($rawRaces as $rawRace)
-		{
-			$race = new static();
-			$race->id = $rawRace['id'];
-			$race->timeRun = $rawRace['timeRun'];
-			$race->timeStarted = new DateTime($rawRace['timeStarted']);
-			$race->timeFinished = $rawRace['timeFinished'] == null ? null : new DateTime($rawRace['timeFinished']);
-			$race->horses = Horse::findByRace($race);
-			$races[] = $race;
-		}
-		return $races;
-	}
-
-	/**
-	 * Get a certain amount of recently finished races
-	 *
-	 * @param int $num The number of races to return
-	 * @return Race[]
-	 * @throws QueryException|\Exception In case the request couldn't be handled
-	 */
-	public static function getLastResults($num=5)
-	{
-		$db = DatabaseManager::getInstance();
-
-		$rawRaces = $db->selectMulti("SELECT * FROM races WHERE timeFinished IS NOT NULL ORDER BY timeFinished DESC LIMIT :num", ["num" => $num]);
-
-		$races = [];
-		foreach($rawRaces as $rawRace)
-		{
-			$race = new static();
-			$race->id = $rawRace['id'];
-			$race->timeRun = $rawRace['timeRun'];
-			$race->timeStarted = new DateTime($rawRace['timeStarted']);
-			$race->timeFinished = $rawRace['timeFinished'] == null ? null : new DateTime($rawRace['timeFinished']);
-			$race->horses = Horse::findByRace($race);
-			$races[] = $race;
-		}
-		return $races;
 	}
 
 	/**
@@ -205,11 +174,11 @@ class Race
 
 	/**
 	 * Returns an array of all horses, sorted by their position in the race
-	 * @return Horse[]
+	 * @return HorseCollection
 	 */
 	public function getSortedHorses()
 	{
-		usort($this->horses, function (Horse $a, Horse $b) {
+		$this->horses->sort(function (Horse $a, Horse $b) {
 			// If the covered distance is the same (eg both horses finished the race already) we compare the time they needed
 			if ($a->getCoveredDistance($this->timeRun) == $b->getCoveredDistance($this->timeRun))
 			{
